@@ -1,3 +1,19 @@
+# name: Deplot dist
+# on: [push,workflow_dispatch]
+# # on:
+# #     - push
+# #     - workflow_dispatch
+# jobs:
+#     test:
+#         runs-on: ubuntu-latest
+#         steps: 
+#             - name: Get Code
+#               run: |
+#                 echo "cloning repo !!"
+#                 echo "${{toJson(github)}}"
+#                 git clone https://github.com/${{github.repository}}.git
+
+
 name: Deplot dist
 on: [push,workflow_dispatch]
 # on:
@@ -8,7 +24,14 @@ jobs:
         runs-on: ubuntu-latest
         steps: 
             - name: Get Code
-              run: |
-                echo "cloning repo !!"
-                echo "${{toJson(github)}}"
-                git clone https://github.com/${{github.repository}}.git
+              uses: actions/checkout@v4
+            - name: Install node 20
+              uses: actions/setup-node@v4
+              with:
+                node-version: 20
+            - name: print node version
+              run: node -v
+            - name: Install the dependencies
+              run: npm ci # it uses packege-lck.json to install depende and npm install use package.json
+            - name: run test code
+              run : npm test
