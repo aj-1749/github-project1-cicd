@@ -1,5 +1,5 @@
 
-name: Deplot dist
+name: Deplot to github pages
 on:
     push:
         branches:
