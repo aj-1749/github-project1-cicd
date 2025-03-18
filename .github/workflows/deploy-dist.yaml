@@ -1,11 +1,14 @@
 name: Deplot dist
-# on: [push,workflow_dispatch]
-on:
-    - push
-    - workflow_dispatch
+on: [push,workflow_dispatch]
+# on:
+#     - push
+#     - workflow_dispatch
 jobs:
-    greet:
+    test:
         runs-on: ubuntu-latest
         steps: 
-            - name: "greet user to mr. john"
-              run: echo "Hello World !!"
+            - name: Get Code
+              run: |
+                echo "cloning repo !!"
+                echo "${{toJson(github)}}"
+                git clone https://github.com/${{github.repository}}.git
