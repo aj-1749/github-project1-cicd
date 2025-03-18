@@ -1,0 +1,11 @@
+name: Deplot dist
+# on: [push,workflow_dispatch]
+on:
+    - push
+    - workflow_dispatch
+jobs:
+    greet:
+        runs-on: ubuntu-latest
+        steps: 
+            - name: "greet user to mr. john"
+              run: echo "Hello World !!"
