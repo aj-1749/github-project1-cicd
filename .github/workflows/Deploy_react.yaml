@@ -1,0 +1,79 @@
+
+name: Deplot dist
+on:
+    push:
+        branches:
+            - main
+            - feature/**
+        paths-ignore:
+            - '.github/workflows/*'
+            - README.md
+    workflow_dispatch:
+            
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps: 
+            - name: Get Code
+              uses: actions/checkout@v4
+            - name: Install node 20
+              uses: actions/setup-node@v4
+              with:
+                node-version: 20
+            - uses: actions/cache@v4
+              with:
+                path: |
+                  ~/.cache/go-build
+                  ~/go/pkg/mod
+                key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+                restore-keys: |
+                  ${{ runner.os }}-go-
+            - name: Install the dependencies
+              run: npm ci # it uses packege-lck.json to install depende and npm install use package.json
+            - name: run test code
+              run : npm test
+    build:
+        needs: test
+        runs-on: ubuntu-latest
+        steps:
+          - name: Get Code
+            uses: actions/checkout@v4
+          - name: Install node 20
+            uses: actions/setup-node@v4
+            with:
+              node-version: 20
+          - uses: actions/cache@v4
+            with:
+              path: |
+                ~/.cache/go-build
+                ~/go/pkg/mod
+              key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+              restore-keys: |
+                ${{ runner.os }}-go-
+          - name: Install the dependencies
+            run: npm ci
+          - name: build the project
+            run: npm run build
+          - name: upload dist artifact
+            uses: actions/upload-pages-artifact@v3
+            with:
+                name: github-pages
+                path: dist
+
+    deploy:
+        needs: build
+        runs-on: ubuntu-latest
+        permissions:
+            pages: write
+            id-token: write
+        # deploy to the github pages environment
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+
+        steps:
+          - name: deploy to github pages
+            id: deployment
+            uses: actions/deploy-pages@v4
+            with:
+                token: ${{secrets.GITHUB_TOKEN}}
