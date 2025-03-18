@@ -54,7 +54,7 @@ jobs:
             - name: run test code
               run : npm test
             # // hello world
-    deploy:
+    build:
         needs: test
         runs-on: ubuntu-latest
         steps:
@@ -76,5 +76,20 @@ jobs:
             run: npm ci
           - name: build the project
             run: npm run build
+          - name: upload dist artifact
+            uses: actions/upload-artifact@v4
+            with:
+                name: dist-files
+                path: dist
+
+    deploy:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+          - name: download dist artifact
+            uses: actions/download-artifact@v4
+            with:
+                name: dist-files
+                path: dist
           - name: deploy
             run: echo "Deploy successfull !!!!"
