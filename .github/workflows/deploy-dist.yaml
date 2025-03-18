@@ -31,10 +31,14 @@ jobs:
                 node-version: 20
             # - name: print node version
             #   run: node -v
-            - name: Cache the dependencies
-              uses: actions/checkout@v4
-              with: ~/.npm
-              key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+            - uses: actions/cache@v4
+              with:
+                path: |
+                  ~/.cache/go-build
+                  ~/go/pkg/mod
+                key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+                restore-keys: |
+                  ${{ runner.os }}-go-
             - name: Install the dependencies
               run: npm ci # it uses packege-lck.json to install depende and npm install use package.json
             - name: run test code
@@ -50,10 +54,14 @@ jobs:
             uses: actions/setup-node@v4
             with:
               node-version: 20
-          - name: Cache the dependencies
-            uses: actions/checkout@v4
-            with: ~/.npm
-            key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          - uses: actions/cache@v4
+            with:
+              path: |
+                ~/.cache/go-build
+                ~/go/pkg/mod
+              key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+              restore-keys: |
+                ${{ runner.os }}-go-
           - name: Install the dependencies
             run: npm ci
           - name: build the project
