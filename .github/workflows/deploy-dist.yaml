@@ -31,6 +31,10 @@ jobs:
                 node-version: 20
             # - name: print node version
             #   run: node -v
+            - name: Cache the dependencies
+              uses: actions/checkout@v4
+              with: ~/.npm
+              key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
             - name: Install the dependencies
               run: npm ci # it uses packege-lck.json to install depende and npm install use package.json
             - name: run test code
